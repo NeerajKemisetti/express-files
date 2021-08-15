@@ -1,28 +1,36 @@
-const express = require('express')
+const express = require("express")
 const app = express()
-const morgan = require('morgan')
-const logger = require('./logger')
-const authorize = require('./authorize')
-//  req => middleware => res
+const logger = require("./logger")
+const morgan = require("morgan")
+const authorize = require("./authorize")
+// req => middleware => res
 
-// app.use([logger, authorize])
-// app.use(express.static('./public'))
-app.use(morgan('tiny'))
+// 1.use vs route
+// 2. options- our owm /express / third party
 
-app.get('/', (req, res) => {
-  res.send('Home')
+//app.use([logger, authorize])
+app.use(morgan("tiny"))
+/* app.use('/api',logger)
+//api/home/about/products
+ */
+app.use(express.static("./public"))
+
+app.get("/", (req, res) => {
+  res.send("Home")
 })
-app.get('/about', (req, res) => {
-  res.send('About')
+
+app.get("/about", (req, res) => {
+  res.send("About")
 })
-app.get('/api/products', (req, res) => {
-  res.send('Products')
+
+app.get("/api/products", (req, res) => {
+  res.send("Products")
 })
-app.get('/api/items', (req, res) => {
+app.get("/api/items", [logger, authorize], (req, res) => {
   console.log(req.user)
-  res.send('Items')
+  res.send("Items")
 })
 
 app.listen(5000, () => {
-  console.log('Server is listening on port 5000....')
+  console.log("Server is listning on port 5000....")
 })
